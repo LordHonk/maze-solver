@@ -58,14 +58,10 @@ class Cell:
                 self.__y2=y2
                 if not self.__win:
                         return
-                if self.has_left_wall:
-                        self.__win.draw_line(Line(Point(x1,y1),Point(x1,y2)))
-                if self.has_right_wall:
-                        self.__win.draw_line(Line(Point(x2,y1),Point(x2,y2)))
-                if self.has_top_wall:
-                        self.__win.draw_line(Line(Point(x1,y1),Point(x2,y1)))
-                if self.has_bottom_wall:
-                        self.__win.draw_line(Line(Point(x1,y2),Point(x2,y2)))
+                self.__win.draw_line(Line(Point(x1,y1),Point(x1,y2)),"black" if self.has_left_wall else "white")
+                self.__win.draw_line(Line(Point(x2,y1),Point(x2,y2)), "black" if self.has_right_wall else "white")
+                self.__win.draw_line(Line(Point(x1,y1),Point(x2,y1)), "black" if self.has_top_wall else "white")
+                self.__win.draw_line(Line(Point(x1,y2),Point(x2,y2)), "black" if self.has_bottom_wall else "white")
 
         def draw_move(self,to_cell,undo=False):
                 col = "gray" if undo else "red"
@@ -106,10 +102,11 @@ class Maze:
                         for row in range(self.num_rows):
                                 self.__cells[row][col] = Cell(self.win)
                                 self.__draw_cell(row,col)
+                self.__break_entrance_and_exit()
 
         def __draw_cell(self,i,j):
-                pos_x = i * self.cell_size_x
-                pos_y = j * self.cell_size_y
+                pos_x = i * self.cell_size_x+self.x1
+                pos_y = j * self.cell_size_y+self.y1
                 self.__cells[i][j].draw(pos_x,pos_y,pos_x+self.cell_size_x,pos_y+self.cell_size_y)
                 self.__animate()
 
@@ -117,12 +114,19 @@ class Maze:
                 if not self.win:
                         return
                 self.win.redraw()
-                time.sleep(0.05)
+                time.sleep(0.01)
+
+        def __break_entrance_and_exit(self):
+                self.__cells[0][0].has_top_wall = False
+                self.__cells[self.num_rows-1][self.num_cols-1].has_bottom_wall = False
+                self.__draw_cell(0,0)
+                self.__draw_cell(self.num_rows-1,self.num_cols-1)
 
 
 def main():
         #win = Window(800,600)
-        #maze = Maze(0,0,30,20,800/30,600/20,win)
+        win = None
+        maze = Maze(50,50,12,10,700/12,500/10,win)
         #win.wait_for_close()
         pass
 
