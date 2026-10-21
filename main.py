@@ -119,7 +119,7 @@ class Maze:
                 if not self.win:
                         return
                 self.win.redraw()
-                time.sleep(0.05)
+                time.sleep(0.01)
 
         def __break_entrance_and_exit(self):
                 self.__cells[0][0].has_top_wall = False
@@ -180,9 +180,9 @@ class Maze:
                 self.__reset_cells_visited()
 
         def __reset_cells_visited(self):
-                for col in range(len(cells)):
-                      for row in range(len(cells[0])):
-                              self.cells[row][col].visited = False
+                for col in self.__cells:
+                        for cell in col:
+                                cell.visited=False
 
         def solve(self):
                 return self.__solve_r(0,0)
@@ -229,7 +229,7 @@ class Maze:
 def main():
         win = Window(800,600)
         #win = None
-        maze = Maze(50,50,15,10,700/15,500/10,win)
+        maze = Maze(50,50,10,10,700/15,500/10,win)
         print("maze created")
         is_solvable = maze.solve()
         if not is_solvable:
